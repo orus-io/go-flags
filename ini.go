@@ -194,6 +194,12 @@ func optionIniName(option *Option) string {
 		return name
 	}
 
+	name = option.tag.Get("long")
+
+	if len(name) != 0 {
+		return name
+	}
+
 	return option.field.Name
 }
 
