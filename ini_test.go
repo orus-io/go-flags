@@ -29,10 +29,10 @@ verbose = true
 verbose = true
 
 ; Test env-default1 value
-EnvDefault1 = env-def
+env-default1 = env-def
 
 ; Test env-default2 value
-EnvDefault2 = env-def
+env-default2 = env-def
 
 [Other Options]
 ; A map from string to int
@@ -49,33 +49,36 @@ int-map = b:3
 verbose = true
 verbose = true
 
-; A slice of pointers to string
-; PtrSlice =
+; Call phone number
+call =
 
-EmptyDescription = false
+; A slice of pointers to string
+; ptrslice =
+
+empty-description = false
 
 ; Test default value
-Default = "Some\nvalue"
+default = "Some\nvalue"
 
 ; Test default array value
-DefaultArray = Some value
-DefaultArray = "Other\tvalue"
+default-array = Some value
+default-array = "Other\tvalue"
 
 ; Testdefault map value
-DefaultMap = another:value
-DefaultMap = some:value
+default-map = another:value
+default-map = some:value
 
 ; Test env-default1 value
-EnvDefault1 = env-def
+env-default1 = env-def
 
 ; Test env-default2 value
-EnvDefault2 = env-def
+env-default2 = env-def
 
 ; Option with named argument
-OptionWithArgName =
+opt-with-arg-name =
 
 ; Option with choices
-OptionWithChoices =
+opt-with-choices =
 
 ; Option only available in ini
 only-ini =
@@ -91,18 +94,18 @@ int-map = b:3
 
 [Subgroup]
 ; This is a subgroup option
-Opt =
+opt =
 
 ; Not hidden inside group
-NotHiddenInsideGroup =
+not-hidden-inside-group =
 
 [Subsubgroup]
 ; This is a subsubgroup option
-Opt =
+opt =
 
 [command]
 ; Use for extra verbosity
-; ExtraVerbose =
+; extra-verbose =
 
 `,
 		},
@@ -113,33 +116,36 @@ Opt =
 ; Show verbose debug information
 ; verbose =
 
-; A slice of pointers to string
-; PtrSlice =
+; Call phone number
+; call =
 
-; EmptyDescription = false
+; A slice of pointers to string
+; ptrslice =
+
+; empty-description = false
 
 ; Test default value
-; Default = "Some\nvalue"
+; default = "Some\nvalue"
 
 ; Test default array value
-; DefaultArray = Some value
-; DefaultArray = "Other\tvalue"
+; default-array = Some value
+; default-array = "Other\tvalue"
 
 ; Testdefault map value
-; DefaultMap = another:value
-; DefaultMap = some:value
+; default-map = another:value
+; default-map = some:value
 
 ; Test env-default1 value
-EnvDefault1 = env-def
+env-default1 = env-def
 
 ; Test env-default2 value
-EnvDefault2 = env-def
+env-default2 = env-def
 
 ; Option with named argument
-; OptionWithArgName =
+; opt-with-arg-name =
 
 ; Option with choices
-; OptionWithChoices =
+; opt-with-choices =
 
 ; Option only available in ini
 ; only-ini =
@@ -154,18 +160,18 @@ EnvDefault2 = env-def
 
 [Subgroup]
 ; This is a subgroup option
-; Opt =
+; opt =
 
 ; Not hidden inside group
-; NotHiddenInsideGroup =
+; not-hidden-inside-group =
 
 [Subsubgroup]
 ; This is a subsubgroup option
-; Opt =
+; opt =
 
 [command]
 ; Use for extra verbosity
-; ExtraVerbose =
+; extra-verbose =
 
 `,
 		},
@@ -176,31 +182,34 @@ EnvDefault2 = env-def
 ; Show verbose debug information
 ; verbose =
 
-; A slice of pointers to string
-; PtrSlice =
+; Call phone number
+; call =
 
-; EmptyDescription = false
+; A slice of pointers to string
+; ptrslice =
+
+; empty-description = false
 
 ; Test default value
-Default = New value
+default = New value
 
 ; Test default array value
-DefaultArray = New value
+default-array = New value
 
 ; Testdefault map value
-DefaultMap = new:value
+default-map = new:value
 
 ; Test env-default1 value
-EnvDefault1 = env-def
+env-default1 = env-def
 
 ; Test env-default2 value
-EnvDefault2 = env-def
+env-default2 = env-def
 
 ; Option with named argument
-; OptionWithArgName =
+; opt-with-arg-name =
 
 ; Option with choices
-; OptionWithChoices =
+; opt-with-choices =
 
 ; Option only available in ini
 ; only-ini =
@@ -215,45 +224,47 @@ EnvDefault2 = env-def
 
 [Subgroup]
 ; This is a subgroup option
-; Opt =
+; opt =
 
 ; Not hidden inside group
-; NotHiddenInsideGroup =
+; not-hidden-inside-group =
 
 [Subsubgroup]
 ; This is a subsubgroup option
-; Opt =
+; opt =
 
 [command]
 ; Use for extra verbosity
-; ExtraVerbose =
+; extra-verbose =
 
 `,
 		},
 	}
 
 	for _, test := range tests {
-		var opts helpOptions
+		t.Run("", func(t *testing.T) {
+			var opts helpOptions
 
-		p := NewNamedParser("TestIni", Default)
-		p.AddGroup("Application Options", "The application options", &opts)
+			p := NewNamedParser("TestIni", Default)
+			p.AddGroup("Application Options", "The application options", &opts)
 
-		_, err := p.ParseArgs(test.args)
+			_, err := p.ParseArgs(test.args)
 
-		if err != nil {
-			t.Fatalf("Unexpected error: %v", err)
-		}
+			if err != nil {
+				t.Fatalf("Unexpected error: %v", err)
+			}
 
-		inip := NewIniParser(p)
+			inip := NewIniParser(p)
 
-		var b bytes.Buffer
-		inip.Write(&b, test.options)
+			var b bytes.Buffer
+			inip.Write(&b, test.options)
 
-		got := b.String()
-		expected := test.expected
+			got := b.String()
+			expected := test.expected
 
-		msg := fmt.Sprintf("with arguments %+v and ini options %b", test.args, test.options)
-		assertDiff(t, got, expected, msg)
+			msg := fmt.Sprintf("with arguments %+v and ini options %b", test.args, test.options)
+			assertDiff(t, expected, got, msg)
+		})
 	}
 }
 
@@ -356,8 +367,8 @@ func TestReadIni(t *testing.T) {
 verbose = true
 verbose = true
 
-DefaultMap = another:"value\n1"
-DefaultMap = some:value 2
+default-map = another:"value\n1"
+default-map = some:value 2
 
 [Application Options]
 ; A slice of pointers to string
@@ -434,7 +445,7 @@ DefaultArray = "2"
 DefaultArray = 3
 
 ; Testdefault map value
-; DefaultMap =
+; default-map =
 
 ; Test env-default1 value
 EnvDefault1 = env-def
@@ -465,7 +476,7 @@ DefaultArray = 2
 DefaultArray = 3
 
 ; Testdefault map value
-; DefaultMap =
+; default-map =
 
 ; Test env-default1 value
 EnvDefault1 = env-def
@@ -499,7 +510,7 @@ DefaultArray = "2"
 DefaultArray = "3"
 
 ; Testdefault map value
-; DefaultMap =
+; default-map =
 
 ; Test env-default1 value
 EnvDefault1 = env-def
@@ -530,7 +541,7 @@ DefaultArray = "2"
 DefaultArray = "3"
 
 ; Testdefault map value
-; DefaultMap =
+; default-map =
 
 ; Test env-default1 value
 EnvDefault1 = env-def
@@ -734,7 +745,7 @@ value = some other value
 		t.Fatalf("Could not read written ini file: %s", err)
 	}
 
-	expected := "[Application Options]\nValue = some other value\n\n"
+	expected := "[Application Options]\nvalue = some other value\n\n"
 
 	assertDiff(t, string(found), expected, "ini content")
 }
@@ -904,7 +915,7 @@ func TestWriteFile(t *testing.T) {
 		t.Fatalf("Could not read written ini file: %s", err)
 	}
 
-	expected := "[Application Options]\nValue = 123\n\n"
+	expected := "[Application Options]\nvalue = 123\n\n"
 
 	assertDiff(t, string(found), expected, "ini content")
 }

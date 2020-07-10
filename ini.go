@@ -194,6 +194,12 @@ func optionIniName(option *Option) string {
 		return name
 	}
 
+	name = option.tag.Get("long")
+
+	if len(name) != 0 {
+		return name
+	}
+
 	return option.field.Name
 }
 
@@ -216,7 +222,7 @@ func writeGroupIni(cmd *Command, group *Group, namespace string, writer io.Write
 	comments := (options & IniIncludeComments) != IniNone
 
 	for _, option := range group.options {
-		if option.isFunc() || option.Hidden {
+		if option.Hidden || option.isFunc() && len(option.tag.Get("ini-name")) == 0 {
 			continue
 		}
 
