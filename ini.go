@@ -247,7 +247,7 @@ func writeGroupIni(cmd *Command, group *Group, namespace string, writer io.Write
 
 		oname := optionIniName(option)
 
-		commentOption := (options&(IniIncludeDefaults|IniCommentDefaults)) == IniIncludeDefaults|IniCommentDefaults && option.valueIsDefault()
+		commentOption := (options&(IniIncludeDefaults|IniCommentDefaults)) == IniIncludeDefaults|IniCommentDefaults && option.valueIsDefault() || option.isFunc()
 
 		kind := val.Type().Kind()
 		switch kind {

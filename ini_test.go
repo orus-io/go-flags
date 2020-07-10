@@ -50,7 +50,7 @@ verbose = true
 verbose = true
 
 ; Call phone number
-call =
+; call =
 
 ; A slice of pointers to string
 ; ptrslice =
